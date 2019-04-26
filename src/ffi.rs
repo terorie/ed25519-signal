@@ -45,4 +45,7 @@ extern "C" {
         customization_label: *const c_uchar,
         customization_label_len: c_ulong,
     ) -> c_int;
+
+    // TODO Only compile in test mode
+    pub fn all_fast_tests(silent: c_int) -> c_int;
 }

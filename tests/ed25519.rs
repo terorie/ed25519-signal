@@ -99,4 +99,13 @@ mod integrations {
         assert!(keypair.verify(&bad,  &good_sig).is_err(),
                 "Verification of a signature on a different message passed!");
     }
+
+    #[test]
+    fn internal() {
+        let res;
+        unsafe {
+            res = all_fast_tests(1);
+        }
+        assert!(res == 0, "Internal tests failed!");
+    }
 }
