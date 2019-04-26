@@ -9,35 +9,18 @@
 
 //! ed25519 keypairs and batch verification.
 
-use core::default::Default;
-
 use rand::CryptoRng;
 use rand::Rng;
 
-#[cfg(feature = "serde")]
-use serde::de::Error as SerdeError;
-#[cfg(feature = "serde")]
-use serde::de::Visitor;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
-#[cfg(feature = "serde")]
-use serde::{Deserializer, Serializer};
-
-pub use sha2::Sha512;
-
-use curve25519_dalek::digest::generic_array::typenum::U64;
-pub use curve25519_dalek::digest::Digest;
-
-use curve25519_dalek::constants;
-
 pub use crate::constants::*;
 pub use crate::errors::*;
+pub use crate::ffi::*;
 pub use crate::public::*;
 pub use crate::secret::*;
 pub use crate::signature::*;
 
 /// An ed25519 keypair.
-#[derive(Debug, Default)] // we derive Default in order to use the clear() method in Drop
+#[derive(Default)] // we derive Default in order to use the clear() method in Drop
 pub struct Keypair {
     /// The secret half of this keypair.
     pub secret: SecretKey,
@@ -141,7 +124,25 @@ impl Keypair {
 
     /// Sign a message with this keypair's secret key.
     pub fn sign(&self, message: &[u8]) -> Signature {
-        // TODO
+        // TODO Check message len < 256
+        // TODO Get randomness
+
+        let rand_bytes: [u8; 32] = [0u8; 32];
+
+        let mut sig = Signature([0u8; SIGNATURE_LENGTH]);
+        unsafe {
+            let res = xed25519_sign(
+                sig.0.as_mut_ptr(),
+                self.secret.0.as_ptr(),
+                message.as_ptr(),
+                message.len() as u64,
+                rand_bytes.as_ptr(),
+            );
+            if res != 0 {
+                panic!("Signing failed");
+            }
+        }
+        sig
     }
 
     /// Verify a signature on a message with this keypair's public key.
@@ -152,51 +153,6 @@ impl Keypair {
     ) -> Result<(), SignatureError>
     {
         self.public.verify(message, signature)
-    }
-}
-
-#[cfg(feature = "serde")]
-impl Serialize for Keypair {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        serializer.serialize_bytes(&self.to_bytes()[..])
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'d> Deserialize<'d> for Keypair {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'d>,
-    {
-        struct KeypairVisitor;
-
-        impl<'d> Visitor<'d> for KeypairVisitor {
-            type Value = Keypair;
-
-            fn expecting(&self, formatter: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                formatter.write_str("An ed25519 keypair, 64 bytes in total where the secret key is \
-                                     the first 32 bytes and is in unexpanded form, and the second \
-                                     32 bytes is a compressed point for a public key.")
-            }
-
-            fn visit_bytes<E>(self, bytes: &[u8]) -> Result<Keypair, E>
-            where
-                E: SerdeError,
-            {
-                let secret_key = SecretKey::from_bytes(&bytes[..SECRET_KEY_LENGTH]);
-                let public_key = PublicKey::from_bytes(&bytes[SECRET_KEY_LENGTH..]);
-
-                if secret_key.is_ok() && public_key.is_ok() {
-                    Ok(Keypair{ secret: secret_key.unwrap(), public: public_key.unwrap() })
-                } else {
-                    Err(SerdeError::invalid_length(bytes.len(), &self))
-                }
-            }
-        }
-        deserializer.deserialize_bytes(KeypairVisitor)
     }
 }
 

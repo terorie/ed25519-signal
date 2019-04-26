@@ -20,8 +20,6 @@ use core::fmt::Display;
 /// need to pay any attention to these.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub(crate) enum InternalError {
-    PointDecompressionError,
-    ScalarFormatError,
     /// An error in the length of bytes handed to a constructor.
     ///
     /// To use this, pass a string specifying the `name` of the type which is
@@ -38,10 +36,6 @@ pub(crate) enum InternalError {
 impl Display for InternalError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
-            InternalError::PointDecompressionError
-                => write!(f, "Cannot decompress Edwards point"),
-            InternalError::ScalarFormatError
-                => write!(f, "Cannot use scalar with high-bit set"),
             InternalError::BytesLengthError{ name: n, length: l}
                 => write!(f, "{} must be {} bytes in length", n, l),
             InternalError::VerifyError

@@ -9,37 +9,15 @@
 
 //! ed25519 public keys.
 
-use core::fmt::Debug;
-
-use curve25519_dalek::constants;
-use curve25519_dalek::digest::generic_array::typenum::U64;
-use curve25519_dalek::digest::Digest;
-
-pub use sha2::Sha512;
-
-#[cfg(feature = "serde")]
-use serde::de::Error as SerdeError;
-#[cfg(feature = "serde")]
-use serde::de::Visitor;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
-#[cfg(feature = "serde")]
-use serde::{Deserializer, Serializer};
-
 use crate::constants::*;
 use crate::errors::*;
+use crate::ffi::*;
 use crate::secret::*;
 use crate::signature::*;
 
 /// An ed25519 public key.
 #[derive(Copy, Clone, Default, Eq, PartialEq)]
-pub struct PublicKey(pub(crate) CompressedEdwardsY, pub(crate) EdwardsPoint);
-
-impl Debug for PublicKey {
-    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-        write!(f, "PublicKey({:?}), {:?})", self.0, self.1)
-    }
-}
+pub struct PublicKey(pub(crate) [u8; PUBLIC_KEY_LENGTH]);
 
 impl AsRef<[u8]> for PublicKey {
     fn as_ref(&self) -> &[u8] {
@@ -50,16 +28,23 @@ impl AsRef<[u8]> for PublicKey {
 impl<'a> From<&'a SecretKey> for PublicKey {
     /// Derive this public key from its corresponding `SecretKey`.
     fn from(secret_key: &SecretKey) -> PublicKey {
-        // TODO
-    }
-}
+        let mut pubkey = PublicKey([0u8; PUBLIC_KEY_LENGTH]);
+        let base_point: [u8; 32] = [
+            9, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+        ];
 
-impl<'a> From<&'a ExpandedSecretKey> for PublicKey {
-    /// Derive this public key from its corresponding `ExpandedSecretKey`.
-    fn from(expanded_secret_key: &ExpandedSecretKey) -> PublicKey {
-        let mut bits: [u8; 32] = expanded_secret_key.key.to_bytes();
+        unsafe {
+            curve25519_donna(
+                pubkey.0.as_mut_ptr(),
+                secret_key.0.as_ptr(),
+                base_point.as_ptr(),
+            );
+        }
 
-        PublicKey::mangle_scalar_bits_and_multiply_by_basepoint_to_produce_public_key(&mut bits)
+        pubkey
     }
 }
 
@@ -67,13 +52,13 @@ impl PublicKey {
     /// Convert this public key to a byte array.
     #[inline]
     pub fn to_bytes(&self) -> [u8; PUBLIC_KEY_LENGTH] {
-        self.0.to_bytes()
+        self.0
     }
 
     /// View this public key as a byte array.
     #[inline]
     pub fn as_bytes<'a>(&'a self) -> &'a [u8; PUBLIC_KEY_LENGTH] {
-        &(self.0).0
+        &(self.0)
     }
 
     /// Construct a `PublicKey` from a slice of bytes.
@@ -123,12 +108,7 @@ impl PublicKey {
         let mut bits: [u8; 32] = [0u8; 32];
         bits.copy_from_slice(&bytes[..32]);
 
-        let compressed = CompressedEdwardsY(bits);
-        let point = compressed
-            .decompress()
-            .ok_or(SignatureError(InternalError::PointDecompressionError))?;
-
-        Ok(PublicKey(compressed, point))
+        Ok(PublicKey(bits))
     }
 
     /// Verify a signature on a message with this keypair's public key.
@@ -143,44 +123,21 @@ impl PublicKey {
         signature: &Signature
     ) -> Result<(), SignatureError>
     {
-        // TODO
-    }
-}
-
-#[cfg(feature = "serde")]
-impl Serialize for PublicKey {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        serializer.serialize_bytes(self.as_bytes())
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'d> Deserialize<'d> for PublicKey {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'d>,
-    {
-        struct PublicKeyVisitor;
-
-        impl<'d> Visitor<'d> for PublicKeyVisitor {
-            type Value = PublicKey;
-
-            fn expecting(&self, formatter: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                formatter.write_str(
-                    "An ed25519 public key as a 32-byte compressed point, as specified in RFC8032",
-                )
-            }
-
-            fn visit_bytes<E>(self, bytes: &[u8]) -> Result<PublicKey, E>
-            where
-                E: SerdeError,
-            {
-                PublicKey::from_bytes(bytes).or(Err(SerdeError::invalid_length(bytes.len(), &self)))
-            }
+        // TODO Check message len < 256
+        let valid: bool;
+        unsafe {
+            let res = xed25519_verify(
+                signature.0.as_ptr(),
+                self.0.as_ptr(),
+                message.as_ptr(),
+                message.len() as u64,
+            );
+            valid = res == 0;
         }
-        deserializer.deserialize_bytes(PublicKeyVisitor)
+        if !valid {
+            Err(SignatureError(InternalError::VerifyError))
+        } else {
+            Ok(())
+        }
     }
 }

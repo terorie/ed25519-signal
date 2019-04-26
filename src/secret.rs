@@ -9,44 +9,17 @@
 
 //! ed25519 secret key types.
 
-use core::fmt::Debug;
-
 use clear_on_drop::clear::Clear;
-
-use curve25519_dalek::constants;
-use curve25519_dalek::digest::generic_array::typenum::U64;
-use curve25519_dalek::digest::Digest;
-use curve25519_dalek::edwards::CompressedEdwardsY;
-use curve25519_dalek::scalar::Scalar;
 
 use rand::CryptoRng;
 use rand::Rng;
 
-use sha2::Sha512;
-
-#[cfg(feature = "serde")]
-use serde::de::Error as SerdeError;
-#[cfg(feature = "serde")]
-use serde::de::Visitor;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
-#[cfg(feature = "serde")]
-use serde::{Deserializer, Serializer};
-
 use crate::constants::*;
 use crate::errors::*;
-use crate::public::*;
-use crate::signature::*;
 
 /// An EdDSA secret key.
 #[derive(Default)] // we derive Default in order to use the clear() method in Drop
 pub struct SecretKey(pub(crate) [u8; SECRET_KEY_LENGTH]);
-
-impl Debug for SecretKey {
-    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-        write!(f, "SecretKey: {:?}", &self.0[..])
-    }
-}
 
 /// Overwrite secret key material with null bytes when it goes out of scope.
 impl Drop for SecretKey {
@@ -181,41 +154,5 @@ impl SecretKey {
         csprng.fill_bytes(&mut sk.0);
 
         sk
-    }
-}
-
-#[cfg(feature = "serde")]
-impl Serialize for SecretKey {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        serializer.serialize_bytes(self.as_bytes())
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'d> Deserialize<'d> for SecretKey {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'d>,
-    {
-        struct SecretKeyVisitor;
-
-        impl<'d> Visitor<'d> for SecretKeyVisitor {
-            type Value = SecretKey;
-
-            fn expecting(&self, formatter: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                formatter.write_str("An ed25519 secret key as 32 bytes, as specified in RFC8032.")
-            }
-
-            fn visit_bytes<E>(self, bytes: &[u8]) -> Result<SecretKey, E>
-            where
-                E: SerdeError,
-            {
-                SecretKey::from_bytes(bytes).or(Err(SerdeError::invalid_length(bytes.len(), &self)))
-            }
-        }
-        deserializer.deserialize_bytes(SecretKeyVisitor)
     }
 }
