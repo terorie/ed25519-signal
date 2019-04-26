@@ -4,11 +4,12 @@ use crate::ffi::libc::*;
 
 #[link(name = "curve25519-signal")]
 extern "C" {
-    pub fn curve25519_donna(
-        public: *mut c_uchar,
-        secret: *const c_uchar,
-        base_point: *const c_uchar,
-    ) -> c_int;
+    pub fn sc_clamp(a: *mut c_uchar);
+
+    pub fn curve25519_keygen(
+        curve25519_pubkey_out: *mut c_uchar,
+        curve25519_privkey: *const c_uchar,
+    );
 
     pub fn xed25519_sign(
         signature_out: *mut c_uchar,

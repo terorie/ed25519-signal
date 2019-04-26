@@ -138,9 +138,7 @@ impl Keypair {
                 message.len() as u64,
                 rand_bytes.as_ptr(),
             );
-            if res != 0 {
-                panic!("Signing failed");
-            }
+            assert!(res == 0, "Signing failed");
         }
         sig
     }
