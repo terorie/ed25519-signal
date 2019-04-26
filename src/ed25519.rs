@@ -11,6 +11,8 @@
 
 use rand::CryptoRng;
 use rand::Rng;
+use rand::RngCore;
+use rand::thread_rng;
 
 pub use crate::constants::*;
 pub use crate::errors::*;
@@ -125,10 +127,10 @@ impl Keypair {
 
     /// Sign a message with this keypair's secret key.
     pub fn sign(&self, message: &[u8]) -> Signature {
-        // TODO Check message len < 256
-        // TODO Get randomness
+        // TODO Check message len
 
-        let rand_bytes: [u8; 64] = [42u8; 64];
+        let mut rand_bytes = [0u8; 64];
+        thread_rng().fill_bytes(&mut rand_bytes);
 
         let mut sig = Signature([0u8; SIGNATURE_LENGTH]);
         unsafe {
@@ -151,9 +153,9 @@ impl Keypair {
     ) -> SignatureVRF {
         // TODO Check message len
         // TODO Check label len
-        // TODO Get randomness
 
-        let rand_bytes: [u8; 64] = [42u8; 64];
+        let mut rand_bytes = [0u8; 64];
+        thread_rng().fill_bytes(&mut rand_bytes);
 
         let mut sig = SignatureVRF([0u8; SIGNATURE_VRF_LENGTH]);
         unsafe {
