@@ -9,6 +9,8 @@
 
 //! An ed25519 signature.
 
+use core::fmt::Debug;
+
 use crate::constants::*;
 use crate::errors::*;
 
@@ -31,6 +33,12 @@ impl PartialEq for Signature {
 impl Clone for Signature {
     fn clone(&self) -> Self {
         *self
+    }
+}
+
+impl Debug for Signature {
+    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        write!(f, "Signature: {:?}", &self.0[..])
     }
 }
 
