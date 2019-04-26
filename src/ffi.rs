@@ -2,6 +2,7 @@ extern crate libc;
 
 use crate::ffi::libc::*;
 
+#[link(name = "curve25519-signal")]
 extern "C" {
     pub fn curve25519_donna(
         public: *mut c_uchar,
