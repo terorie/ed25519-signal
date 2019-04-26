@@ -12,6 +12,9 @@
 /// The length of a ed25519 `Signature`, in bytes.
 pub const SIGNATURE_LENGTH: usize = 64;
 
+/// The length of a ed25519 `SignatureVRF`, in bytes.
+pub const SIGNATURE_VRF_LENGTH: usize = 96;
+
 /// The length of a ed25519 `SecretKey`, in bytes.
 pub const SECRET_KEY_LENGTH: usize = 32;
 
@@ -20,3 +23,5 @@ pub const PUBLIC_KEY_LENGTH: usize = 32;
 
 /// The length of an ed25519 `Keypair`, in bytes.
 pub const KEYPAIR_LENGTH: usize = SECRET_KEY_LENGTH + PUBLIC_KEY_LENGTH;
+
+pub const VRF_OUT_LENGTH: usize = 32;

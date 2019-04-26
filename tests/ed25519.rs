@@ -45,6 +45,30 @@ mod integrations {
     }
 
     #[test]
+    fn vrf_sign_verify() {
+        let mut csprng: ThreadRng;
+        let keypair: Keypair;
+        let good_sig: SignatureVRF;
+        let bad_sig: SignatureVRF;
+
+        let label: &[u8] = "label".as_bytes();
+        let good: &[u8] = "test message".as_bytes();
+        let bad:  &[u8] = "wrong message".as_bytes();
+
+        csprng = thread_rng();
+        keypair = Keypair::generate(&mut csprng);
+        good_sig = keypair.sign_vrf(&good, &label);
+        bad_sig = keypair.sign_vrf(&bad, &label);
+
+        assert!(keypair.verify_vrf(&good, &label, &good_sig).is_ok(),
+                "Verification of a valid signature failed!");
+        assert!(keypair.verify_vrf(&good, &label, &bad_sig).is_err(),
+                "Verification of a signature on a different message passed!");
+        assert!(keypair.verify_vrf(&bad, &label, &good_sig).is_err(),
+                "Verification of a signature on a different message passed!");
+    }
+
+    #[test]
     fn internal() {
         let res;
         unsafe {

@@ -18,6 +18,7 @@ pub use crate::ffi::*;
 pub use crate::public::*;
 pub use crate::secret::*;
 pub use crate::signature::*;
+pub use crate::signature_vrf::*;
 
 /// An ed25519 keypair.
 #[derive(Debug, Default)] // we derive Default in order to use the clear() method in Drop
@@ -143,6 +144,33 @@ impl Keypair {
         sig
     }
 
+    pub fn sign_vrf(
+        &self,
+        message: &[u8],
+        label: &[u8],
+    ) -> SignatureVRF {
+        // TODO Check message len
+        // TODO Check label len
+        // TODO Get randomness
+
+        let rand_bytes: [u8; 64] = [42u8; 64];
+
+        let mut sig = SignatureVRF([0u8; SIGNATURE_VRF_LENGTH]);
+        unsafe {
+            let res = generalized_xveddsa_25519_sign(
+                sig.0.as_mut_ptr(),
+                self.secret.0.as_ptr(),
+                message.as_ptr(),
+                message.len() as u64,
+                rand_bytes.as_ptr(),
+                label.as_ptr(),
+                label.len() as u64,
+            );
+            assert!(res == 0, "Signing failed");
+        }
+        sig
+    }
+
     /// Verify a signature on a message with this keypair's public key.
     pub fn verify(
         &self,
@@ -151,6 +179,16 @@ impl Keypair {
     ) -> Result<(), SignatureError>
     {
         self.public.verify(message, signature)
+    }
+
+    pub fn verify_vrf(
+        &self,
+        message: &[u8],
+        label: &[u8],
+        signature: &SignatureVRF,
+    ) -> Result<[u8; VRF_OUT_LENGTH], SignatureError>
+    {
+        self.public.verify_vrf(message, label, signature)
     }
 }
 

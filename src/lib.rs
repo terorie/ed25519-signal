@@ -258,6 +258,7 @@ mod ffi;
 mod public;
 mod secret;
 mod signature;
+mod signature_vrf;
 
 // Export everything public in ed25519.
 pub use crate::ed25519::*;
