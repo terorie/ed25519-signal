@@ -14,9 +14,6 @@ use core::fmt::Debug;
 use curve25519_dalek::constants;
 use curve25519_dalek::digest::generic_array::typenum::U64;
 use curve25519_dalek::digest::Digest;
-use curve25519_dalek::edwards::CompressedEdwardsY;
-use curve25519_dalek::edwards::EdwardsPoint;
-use curve25519_dalek::scalar::Scalar;
 
 pub use sha2::Sha512;
 
@@ -53,16 +50,7 @@ impl AsRef<[u8]> for PublicKey {
 impl<'a> From<&'a SecretKey> for PublicKey {
     /// Derive this public key from its corresponding `SecretKey`.
     fn from(secret_key: &SecretKey) -> PublicKey {
-        let mut h: Sha512 = Sha512::new();
-        let mut hash: [u8; 64] = [0u8; 64];
-        let mut digest: [u8; 32] = [0u8; 32];
-
-        h.input(secret_key.as_bytes());
-        hash.copy_from_slice(h.result().as_slice());
-
-        digest.copy_from_slice(&hash[..32]);
-
-        PublicKey::mangle_scalar_bits_and_multiply_by_basepoint_to_produce_public_key(&mut digest)
+        // TODO
     }
 }
 
@@ -143,22 +131,6 @@ impl PublicKey {
         Ok(PublicKey(compressed, point))
     }
 
-    /// Internal utility function for mangling the bits of a (formerly
-    /// mathematically well-defined) "scalar" and multiplying it to produce a
-    /// public key.
-    fn mangle_scalar_bits_and_multiply_by_basepoint_to_produce_public_key(
-        bits: &mut [u8; 32],
-    ) -> PublicKey {
-        bits[0] &= 248;
-        bits[31] &= 127;
-        bits[31] |= 64;
-
-        let point = &Scalar::from_bits(*bits) * &constants::ED25519_BASEPOINT_TABLE;
-        let compressed = point.compress();
-
-        PublicKey(compressed, point)
-    }
-
     /// Verify a signature on a message with this keypair's public key.
     ///
     /// # Return
@@ -171,78 +143,7 @@ impl PublicKey {
         signature: &Signature
     ) -> Result<(), SignatureError>
     {
-        let mut h: Sha512 = Sha512::new();
-        let R: EdwardsPoint;
-        let k: Scalar;
-        let minus_A: EdwardsPoint = -self.1;
-
-        h.input(signature.R.as_bytes());
-        h.input(self.as_bytes());
-        h.input(&message);
-
-        k = Scalar::from_hash(h);
-        R = EdwardsPoint::vartime_double_scalar_mul_basepoint(&k, &(minus_A), &signature.s);
-
-        if R.compress() == signature.R {
-            Ok(())
-        } else {
-            Err(SignatureError(InternalError::VerifyError))
-        }
-    }
-
-    /// Verify a `signature` on a `prehashed_message` using the Ed25519ph algorithm.
-    ///
-    /// # Inputs
-    ///
-    /// * `prehashed_message` is an instantiated hash digest with 512-bits of
-    ///   output which has had the message to be signed previously fed into its
-    ///   state.
-    /// * `context` is an optional context string, up to 255 bytes inclusive,
-    ///   which may be used to provide additional domain separation.  If not
-    ///   set, this will default to an empty string.
-    /// * `signature` is a purported Ed25519ph [`Signature`] on the `prehashed_message`.
-    ///
-    /// # Returns
-    ///
-    /// Returns `true` if the `signature` was a valid signature created by this
-    /// `Keypair` on the `prehashed_message`.
-    ///
-    /// [rfc8032]: https://tools.ietf.org/html/rfc8032#section-5.1
-    #[allow(non_snake_case)]
-    pub fn verify_prehashed<D>(
-        &self,
-        prehashed_message: D,
-        context: Option<&[u8]>,
-        signature: &Signature,
-    ) -> Result<(), SignatureError>
-    where
-        D: Digest<OutputSize = U64>,
-    {
-        let mut h: Sha512 = Sha512::default();
-        let R: EdwardsPoint;
-        let k: Scalar;
-
-        let ctx: &[u8] = context.unwrap_or(b"");
-        debug_assert!(ctx.len() <= 255, "The context must not be longer than 255 octets.");
-
-        let minus_A: EdwardsPoint = -self.1;
-
-        h.input(b"SigEd25519 no Ed25519 collisions");
-        h.input(&[1]); // Ed25519ph
-        h.input(&[ctx.len() as u8]);
-        h.input(ctx);
-        h.input(signature.R.as_bytes());
-        h.input(self.as_bytes());
-        h.input(prehashed_message.result().as_slice());
-
-        k = Scalar::from_hash(h);
-        R = EdwardsPoint::vartime_double_scalar_mul_basepoint(&k, &(minus_A), &signature.s);
-
-        if R.compress() == signature.R {
-            Ok(())
-        } else {
-            Err(SignatureError(InternalError::VerifyError))
-        }
+        // TODO
     }
 }
 
