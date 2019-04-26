@@ -20,14 +20,14 @@
 //!
 //! ```
 //! extern crate rand;
-//! extern crate ed25519_dalek;
+//! extern crate ed25519_signal;
 //!
 //! # #[cfg(feature = "std")]
 //! # fn main() {
 //! use rand::Rng;
 //! use rand::rngs::OsRng;
-//! use ed25519_dalek::Keypair;
-//! use ed25519_dalek::Signature;
+//! use ed25519_signal::Keypair;
+//! use ed25519_signal::Signature;
 //!
 //! let mut csprng: OsRng = OsRng::new().unwrap();
 //! let keypair: Keypair = Keypair::generate(&mut csprng);
@@ -41,12 +41,12 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::Keypair;
-//! # use ed25519_dalek::Signature;
+//! # use ed25519_signal::Keypair;
+//! # use ed25519_signal::Signature;
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! let message: &[u8] = b"This is a test of the tsunami alert system.";
@@ -59,12 +59,12 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::Keypair;
-//! # use ed25519_dalek::Signature;
+//! # use ed25519_signal::Keypair;
+//! # use ed25519_signal::Signature;
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! # let message: &[u8] = b"This is a test of the tsunami alert system.";
@@ -78,13 +78,13 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::Keypair;
-//! # use ed25519_dalek::Signature;
-//! use ed25519_dalek::PublicKey;
+//! # use ed25519_signal::Keypair;
+//! # use ed25519_signal::Signature;
+//! use ed25519_signal::PublicKey;
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! # let message: &[u8] = b"This is a test of the tsunami alert system.";
@@ -105,12 +105,12 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::{Keypair, Signature, PublicKey};
-//! use ed25519_dalek::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
+//! # use ed25519_signal::{Keypair, Signature, PublicKey};
+//! use ed25519_signal::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! # let message: &[u8] = b"This is a test of the tsunami alert system.";
@@ -128,11 +128,11 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::{Keypair, Signature, PublicKey, SecretKey, SignatureError};
-//! # use ed25519_dalek::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
+//! # use ed25519_signal::{Keypair, Signature, PublicKey, SecretKey, SignatureError};
+//! # use ed25519_signal::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
 //! # fn do_test() -> Result<(SecretKey, PublicKey, Keypair, Signature), SignatureError> {
 //! # let mut csprng = thread_rng();
 //! # let keypair_orig: Keypair = Keypair::generate(&mut csprng);
@@ -170,7 +170,7 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # #[cfg(feature = "serde")]
 //! extern crate serde;
 //! # #[cfg(feature = "serde")]
@@ -180,7 +180,7 @@
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::{Keypair, Signature, PublicKey};
+//! # use ed25519_signal::{Keypair, Signature, PublicKey};
 //! use bincode::{serialize, Infinite};
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
@@ -201,7 +201,7 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate ed25519_dalek;
+//! # extern crate ed25519_signal;
 //! # #[cfg(feature = "serde")]
 //! # extern crate serde;
 //! # #[cfg(feature = "serde")]
@@ -211,7 +211,7 @@
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use ed25519_dalek::{Keypair, Signature, PublicKey};
+//! # use ed25519_signal::{Keypair, Signature, PublicKey};
 //! # use bincode::{serialize, Infinite};
 //! use bincode::{deserialize};
 //!

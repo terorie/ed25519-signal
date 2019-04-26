@@ -85,15 +85,15 @@ impl Keypair {
     ///
     /// ```
     /// extern crate rand;
-    /// extern crate ed25519_dalek;
+    /// extern crate ed25519_signal;
     ///
     /// # #[cfg(feature = "std")]
     /// # fn main() {
     ///
     /// use rand::Rng;
     /// use rand::rngs::OsRng;
-    /// use ed25519_dalek::Keypair;
-    /// use ed25519_dalek::Signature;
+    /// use ed25519_signal::Keypair;
+    /// use ed25519_signal::Signature;
     ///
     /// let mut csprng: OsRng = OsRng::new().unwrap();
     /// let keypair: Keypair = Keypair::generate(&mut csprng);
