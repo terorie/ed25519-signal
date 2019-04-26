@@ -9,6 +9,8 @@
 
 //! ed25519 secret key types.
 
+use core::fmt::Debug;
+
 use clear_on_drop::clear::Clear;
 
 use rand::CryptoRng;
@@ -20,6 +22,12 @@ use crate::errors::*;
 /// An EdDSA secret key.
 #[derive(Default)] // we derive Default in order to use the clear() method in Drop
 pub struct SecretKey(pub(crate) [u8; SECRET_KEY_LENGTH]);
+
+impl Debug for SecretKey {
+    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        write!(f, "SecretKey: {:?}", &self.0[..])
+    }
+}
 
 /// Overwrite secret key material with null bytes when it goes out of scope.
 impl Drop for SecretKey {

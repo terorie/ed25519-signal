@@ -9,6 +9,8 @@
 
 //! ed25519 public keys.
 
+use core::fmt::Debug;
+
 use crate::constants::*;
 use crate::errors::*;
 use crate::ffi::*;
@@ -18,6 +20,12 @@ use crate::signature::*;
 /// An ed25519 public key.
 #[derive(Copy, Clone, Default, Eq, PartialEq)]
 pub struct PublicKey(pub(crate) [u8; PUBLIC_KEY_LENGTH]);
+
+impl Debug for PublicKey {
+    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        write!(f, "PublicKey: {:?}", &self.0[..])
+    }
+}
 
 impl AsRef<[u8]> for PublicKey {
     fn as_ref(&self) -> &[u8] {
