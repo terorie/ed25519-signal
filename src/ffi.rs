@@ -1,6 +1,6 @@
 extern crate libc;
 
-use std::os::raw::*;
+use crate::ffi::libc::*;
 
 extern "C" {
     pub fn curve25519_donna(
