@@ -26,9 +26,8 @@ extern "C" {
         msg_len: c_ulong,
     ) -> c_int;
 
-    pub fn generalized_veddsa_25519_sign(
+    pub fn generalized_xveddsa_25519_sign(
         signature_out: *mut c_uchar,
-        eddsa_25519_pubkey_bytes: *const c_uchar,
         eddsa_25519_privkey_scalar: *const c_uchar,
         msg: *const c_uchar,
         msg_len: c_ulong,
@@ -37,7 +36,7 @@ extern "C" {
         customization_label_len: c_ulong,
     ) -> c_int;
 
-    pub fn generalized_veddsa_25519_verify(
+    pub fn generalized_xveddsa_25519_verify(
         vrf_out: *mut c_uchar,
         signature: *const c_uchar,
         eddsa_25519_pubkey_bytes: *const c_uchar,

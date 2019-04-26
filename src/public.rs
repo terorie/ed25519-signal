@@ -16,6 +16,7 @@ use crate::errors::*;
 use crate::ffi::*;
 use crate::secret::*;
 use crate::signature::*;
+use crate::signature_vrf::*;
 
 /// An ed25519 public key.
 #[derive(Copy, Clone, Default, Eq, PartialEq)]
@@ -139,6 +140,35 @@ impl PublicKey {
             Err(SignatureError(InternalError::VerifyError))
         } else {
             Ok(())
+        }
+    }
+
+    pub fn verify_vrf(
+        &self,
+        message: &[u8],
+        label: &[u8],
+        signature: &SignatureVRF,
+    ) -> Result<[u8; VRF_OUT_LENGTH], SignatureError>
+    {
+        let mut vrf_out = [0u8; VRF_OUT_LENGTH];
+
+        let valid: bool;
+        unsafe {
+            let res = generalized_xveddsa_25519_verify(
+                vrf_out.as_mut_ptr(),
+                signature.0.as_ptr(),
+                self.0.as_ptr(),
+                message.as_ptr(),
+                message.len() as u64,
+                label.as_ptr(),
+                label.len() as u64,
+            );
+            valid = res == 0;
+        }
+        if !valid {
+            Err(SignatureError(InternalError::VerifyError))
+        } else {
+            Ok(vrf_out)
         }
     }
 }
