@@ -61,11 +61,11 @@ impl SecretKey {
     /// # Example
     ///
     /// ```
-    /// # extern crate ed25519_dalek;
+    /// # extern crate ed25519_signal;
     /// #
-    /// use ed25519_dalek::SecretKey;
-    /// use ed25519_dalek::SECRET_KEY_LENGTH;
-    /// use ed25519_dalek::SignatureError;
+    /// use ed25519_signal::SecretKey;
+    /// use ed25519_signal::SECRET_KEY_LENGTH;
+    /// use ed25519_signal::SignatureError;
     ///
     /// # fn doctest() -> Result<SecretKey, SignatureError> {
     /// let secret_key_bytes: [u8; SECRET_KEY_LENGTH] = [
@@ -109,8 +109,7 @@ impl SecretKey {
     ///
     /// ```
     /// extern crate rand;
-    /// extern crate sha2;
-    /// extern crate ed25519_dalek;
+    /// extern crate ed25519_signal;
     ///
     /// # #[cfg(feature = "std")]
     /// # fn main() {
@@ -118,9 +117,9 @@ impl SecretKey {
     /// use rand::Rng;
     /// use rand::rngs::OsRng;
     /// use sha2::Sha512;
-    /// use ed25519_dalek::PublicKey;
-    /// use ed25519_dalek::SecretKey;
-    /// use ed25519_dalek::Signature;
+    /// use ed25519_signal::PublicKey;
+    /// use ed25519_signal::SecretKey;
+    /// use ed25519_signal::Signature;
     ///
     /// let mut csprng: OsRng = OsRng::new().unwrap();
     /// let secret_key: SecretKey = SecretKey::generate(&mut csprng);
@@ -134,15 +133,15 @@ impl SecretKey {
     ///
     /// ```
     /// # extern crate rand;
-    /// # extern crate ed25519_dalek;
+    /// # extern crate ed25519_signal;
     /// #
     /// # fn main() {
     /// #
     /// # use rand::Rng;
     /// # use rand::thread_rng;
-    /// # use ed25519_dalek::PublicKey;
-    /// # use ed25519_dalek::SecretKey;
-    /// # use ed25519_dalek::Signature;
+    /// # use ed25519_signal::PublicKey;
+    /// # use ed25519_signal::SecretKey;
+    /// # use ed25519_signal::Signature;
     /// #
     /// # let mut csprng = thread_rng();
     /// # let secret_key: SecretKey = SecretKey::generate(&mut csprng);

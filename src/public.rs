@@ -68,17 +68,17 @@ impl PublicKey {
     /// # Warning
     ///
     /// The caller is responsible for ensuring that the bytes passed into this
-    /// method actually represent a `curve25519_dalek::curve::CompressedEdwardsY`
+    /// method actually represent a `curve25519_signal::curve::CompressedEdwardsY`
     /// and that said compressed point is actually a point on the curve.
     ///
     /// # Example
     ///
     /// ```
-    /// # extern crate ed25519_dalek;
+    /// # extern crate ed25519_signal;
     /// #
-    /// use ed25519_dalek::PublicKey;
-    /// use ed25519_dalek::PUBLIC_KEY_LENGTH;
-    /// use ed25519_dalek::SignatureError;
+    /// use ed25519_signal::PublicKey;
+    /// use ed25519_signal::PUBLIC_KEY_LENGTH;
+    /// use ed25519_signal::SignatureError;
     ///
     /// # fn doctest() -> Result<PublicKey, SignatureError> {
     /// let public_key_bytes: [u8; PUBLIC_KEY_LENGTH] = [
