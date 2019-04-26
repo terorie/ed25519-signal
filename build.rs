@@ -5,6 +5,7 @@ fn main() {
         .include("src/signal/ed25519")
         .include("src/signal/ed25519/nacl_includes")
         .include("src/signal/ed25519/additions")
+        .include("src/signal/ed25519/additions/generalized")
         .file("src/signal/curve25519-donna.c")
         .file("src/signal/ed25519/fe_0.c")
         .file("src/signal/ed25519/fe_1.c")
@@ -65,7 +66,15 @@ fn main() {
         .file("src/signal/ed25519/additions/utility.c")
         .file("src/signal/ed25519/additions/xeddsa.c")
         .file("src/signal/ed25519/additions/zeroize.c")
+        .file("src/signal/ed25519/additions/generalized/ge_p3_add.c")
+        .file("src/signal/ed25519/additions/generalized/gen_eddsa.c")
+        .file("src/signal/ed25519/additions/generalized/gen_labelset.c")
+        .file("src/signal/ed25519/additions/generalized/gen_veddsa.c")
+        .file("src/signal/ed25519/additions/generalized/gen_x.c")
+        .file("src/signal/ed25519/additions/generalized/point_isreduced.c")
+        .file("src/signal/ed25519/additions/generalized/sc_isreduced.c")
         .file("src/signal/ed25519/nacl_sha512/blocks.c")
         .file("src/signal/ed25519/nacl_sha512/hash.c")
+        .file("src/signal/ed25519/tests/internal_fast_tests.c")
         .compile("curve25519-signal");
 }

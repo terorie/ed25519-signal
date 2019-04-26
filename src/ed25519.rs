@@ -127,7 +127,7 @@ impl Keypair {
         // TODO Check message len < 256
         // TODO Get randomness
 
-        let rand_bytes: [u8; 32] = [0u8; 32];
+        let rand_bytes: [u8; 64] = [42u8; 64];
 
         let mut sig = Signature([0u8; SIGNATURE_LENGTH]);
         unsafe {
