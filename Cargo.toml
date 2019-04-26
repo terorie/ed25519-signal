@@ -15,6 +15,9 @@ exclude = [ ".gitignore", "TESTVECTORS", "res/*" ]
 [badges]
 travis-ci = { repository = "dalek-cryptography/ed25519-dalek", branch = "master"}
 
+[dependencies.libc]
+version = "~0.2"
+
 [dependencies.curve25519-dalek]
 version = "1"
 default-features = false
