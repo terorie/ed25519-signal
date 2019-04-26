@@ -37,18 +37,11 @@ impl<'a> From<&'a SecretKey> for PublicKey {
     /// Derive this public key from its corresponding `SecretKey`.
     fn from(secret_key: &SecretKey) -> PublicKey {
         let mut pubkey = PublicKey([0u8; PUBLIC_KEY_LENGTH]);
-        let base_point: [u8; 32] = [
-            9, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-        ];
 
         unsafe {
-            curve25519_donna(
+            curve25519_keygen(
                 pubkey.0.as_mut_ptr(),
                 secret_key.0.as_ptr(),
-                base_point.as_ptr(),
             );
         }
 

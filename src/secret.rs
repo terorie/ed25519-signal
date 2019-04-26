@@ -18,6 +18,7 @@ use rand::Rng;
 
 use crate::constants::*;
 use crate::errors::*;
+use crate::ffi::*;
 
 /// An EdDSA secret key.
 #[derive(Default)] // we derive Default in order to use the clear() method in Drop
@@ -160,6 +161,10 @@ impl SecretKey {
         let mut sk: SecretKey = SecretKey([0u8; 32]);
 
         csprng.fill_bytes(&mut sk.0);
+
+        unsafe {
+            sc_clamp(sk.0.as_mut_ptr());
+        }
 
         sk
     }
