@@ -21,6 +21,8 @@ use rand::rngs::ThreadRng;
 mod integrations {
     use super::*;
 
+    static LARGE_MSG: [u8; 1024] = [42u8; 1024];
+
     #[test]
     fn sign_verify() {  // TestSignVerify
         let mut csprng: ThreadRng;
@@ -35,6 +37,7 @@ mod integrations {
         keypair  = Keypair::generate(&mut csprng);
         good_sig = keypair.sign(&good);
         bad_sig  = keypair.sign(&bad);
+        keypair.sign(&LARGE_MSG);
 
         assert!(keypair.verify(&good, &good_sig).is_ok(),
                 "Verification of a valid signature failed!");
@@ -59,6 +62,8 @@ mod integrations {
         keypair = Keypair::generate(&mut csprng);
         good_sig = keypair.sign_vrf(&good, &label);
         bad_sig = keypair.sign_vrf(&bad, &label);
+        // Test signing large message
+        keypair.sign_vrf(&LARGE_MSG, &label);
 
         assert!(keypair.verify_vrf(&good, &label, &good_sig).is_ok(),
                 "Verification of a valid signature failed!");

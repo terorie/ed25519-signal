@@ -127,8 +127,6 @@ impl Keypair {
 
     /// Sign a message with this keypair's secret key.
     pub fn sign(&self, message: &[u8]) -> Signature {
-        // TODO Check message len
-
         let mut rand_bytes = [0u8; 64];
         thread_rng().fill_bytes(&mut rand_bytes);
 
@@ -151,8 +149,7 @@ impl Keypair {
         message: &[u8],
         label: &[u8],
     ) -> SignatureVRF {
-        // TODO Check message len
-        // TODO Check label len
+        assert!(label.len() < 128);
 
         let mut rand_bytes = [0u8; 64];
         thread_rng().fill_bytes(&mut rand_bytes);

@@ -125,7 +125,6 @@ impl PublicKey {
         signature: &Signature
     ) -> Result<(), SignatureError>
     {
-        // TODO Check message len < 256
         let valid: bool;
         unsafe {
             let res = xed25519_verify(
