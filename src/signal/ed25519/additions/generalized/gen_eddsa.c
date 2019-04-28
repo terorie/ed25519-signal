@@ -45,7 +45,7 @@ int generalized_commit(unsigned char* R_bytes, unsigned char* r_scalar,
     goto err;
   if (extra != NULL && extra_len == 0)
     goto err;
-  if (extra != NULL && labelset_is_empty(labelset, labelset_len))
+  if (extra != NULL && labelset_is_empty(labelset_len))
     goto err;
   if (HASHLEN != 64)
     goto err;
@@ -120,12 +120,12 @@ int generalized_challenge(unsigned char* h_scalar,
     goto err;
   if (extra != NULL && extra_len == 0)
     goto err;
-  if (extra != NULL && labelset_is_empty(labelset, labelset_len))
+  if (extra != NULL && labelset_is_empty(labelset_len))
     goto err;
   if (HASHLEN != 64)
     goto err;
 
-  if (labelset_is_empty(labelset, labelset_len)) {
+  if (labelset_is_empty(labelset_len)) {
     if (2*POINTLEN > M_start)
       goto err;
     if (extra != NULL || extra_len != 0)
