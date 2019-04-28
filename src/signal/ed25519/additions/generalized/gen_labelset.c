@@ -19,7 +19,7 @@ unsigned char* buffer_add(unsigned char* bufptr, const unsigned char* bufend,
     return NULL;
   if (in == NULL && in_len != 0)
     return NULL;
-  if (bufend - bufptr < in_len)
+  if (bufend - bufptr < (long)(in_len))
     return NULL;
 
   for (count=0; count < in_len; count++) {
@@ -39,7 +39,7 @@ unsigned char* buffer_pad(const unsigned char* buf, unsigned char* bufptr, const
     return NULL;
 
   pad_len = (BLOCKLEN - ((bufptr-buf) % BLOCKLEN)) % BLOCKLEN;
-  if (bufend - bufptr < pad_len)
+  if (bufend - bufptr < (long)(pad_len))
     return NULL;
 
   for (count=0; count < pad_len; count++) {
@@ -112,9 +112,9 @@ int labelset_add(unsigned char* labelset, unsigned long* labelset_len, const uns
   bufptr = buffer_add(bufptr, labelset + labelset_maxlen, label, label_len);
   if (bufptr == NULL)
     return -1;
-  if (bufptr - labelset >= labelset_maxlen)
+  if (bufptr - labelset >= (long)(labelset_maxlen))
     return -1;
-  if (bufptr - labelset != *labelset_len + 1 + label_len)
+  if (bufptr - labelset != (long)(*labelset_len + 1 + label_len))
     return -1;
 
   *labelset_len += (1 + label_len);
