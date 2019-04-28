@@ -71,7 +71,7 @@ int generalized_commit(unsigned char* R_bytes, unsigned char* r_scalar,
   bufptr = buffer_add(bufptr, bufend, labelset, labelset_len);
   bufptr = buffer_add(bufptr, bufend, K_bytes, POINTLEN);
   bufptr = buffer_add(bufptr, bufend, extra, extra_len);
-  if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != prefix_len)
+  if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != (long)(prefix_len))
     goto err;
 
   crypto_hash_sha512(hash, M_buf + M_start - prefix_len, prefix_len + M_len);
@@ -150,7 +150,7 @@ int generalized_challenge(unsigned char* h_scalar,
 
     if (bufptr == NULL)
       goto err;
-    if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != prefix_len)
+    if (bufptr != bufend || bufptr != M_buf + M_start || bufptr - bufstart != (long)(prefix_len))
       goto err;
   }
 
