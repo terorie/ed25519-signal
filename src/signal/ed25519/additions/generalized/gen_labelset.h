@@ -18,6 +18,6 @@ int labelset_add(unsigned char* labelset, unsigned long* labelset_len, const uns
 
 int labelset_validate(const unsigned char* labelset, const unsigned long labelset_len);
 
-int labelset_is_empty(const unsigned char* labelset, const unsigned long labelset_len);
+int labelset_is_empty(const unsigned long labelset_len);
 
 #endif

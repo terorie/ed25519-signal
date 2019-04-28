@@ -148,7 +148,7 @@ int labelset_validate(const unsigned char* labelset, const unsigned long labelse
   return 0;
 }
 
-int labelset_is_empty(const unsigned char* labelset, const unsigned long labelset_len)
+int labelset_is_empty(const unsigned long labelset_len)
 {
   if (labelset_len != 3)
     return 0;
