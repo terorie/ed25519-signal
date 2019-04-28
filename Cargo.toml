@@ -4,16 +4,16 @@ version = "1.0.0-pre.1"
 authors = ["isis lovecruft <isis@patternsinthevoid.net>"]
 readme = "README.md"
 license = "BSD-3-Clause"
-repository = "https://github.com/dalek-cryptography/ed25519-dalek"
+repository = "https://github.com/terorie/ed25519-signal"
 homepage = "https://signal.org/docs/specifications/xeddsa/"
-documentation = "https://docs.rs/ed25519-dalek"
+documentation = "https://docs.rs/ed25519-signal"
 keywords = ["cryptography", "ed25519", "curve25519", "signature", "ECC"]
 categories = ["cryptography", "no-std"]
-description = "Fast and efficient ed25519 EdDSA key generations, signing, and verification in pure Rust."
+description = "XEdDSA and VXEdDSA signing and verification in Rust."
 exclude = [ ".gitignore", "TESTVECTORS", "res/*" ]
 
 [badges]
-travis-ci = { repository = "dalek-cryptography/ed25519-dalek", branch = "master"}
+travis-ci = { repository = "terorie/ed25519-signal", branch = "master"}
 
 [dependencies.libc]
 version = "~0.2"
